@@ -1,0 +1,9 @@
+max_wet_temp
+tmp_air_wet
+min_wet_temp
+tmp_air_dry
+tmp_dew_pnt
+max_heat_stress
+min_heat_stress
+max_dry_temp
+min_dry_temp

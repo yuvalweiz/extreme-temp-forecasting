@@ -1,0 +1,6 @@
+model,temp_mae,peak_load_mae_MW,MW_saved_vs_ours,pct_reduction_vs_ours
+ours_tft,2.2,596.5,0.0,0.0
+tab_lstm,2.8,773.2,176.8,22.9
+sarimax,4.7,1203.0,606.6,50.4
+prophet,4.7,1207.7,611.3,50.6
+timesfm,4.9,1195.6,599.1,50.1

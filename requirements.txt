@@ -1,0 +1,20 @@
+# Pinned from the environment used for all paper runs (Python 3.11.14, CUDA 12.1).
+# Every version below is what `pip freeze` reports in that environment and is
+# actually imported by code in src/ (verified).
+
+# Core — training, evaluation, dataset/weight generation
+torch==2.5.1
+timm==1.0.24
+numpy==1.26.4
+pandas==2.1.4
+scipy==1.11.4
+matplotlib==3.10.8
+
+# Frame generation only (SRTM DEM elevation sampling in src/data/rebuild_frames.py)
+rasterio==1.4.4
+
+# Optional — zero-shot foundation-model baselines only
+# (large downloads; the paper's baseline outputs are already bundled in results/)
+# timesfm @ git+https://github.com/google-research/timesfm.git@6bd8044275f8b76cdc9554f2fecccac5f31a156c  # TimesFM 2.5 (src/baselines/run_timesfm.py)
+# uni2ts==2.0.0      # Moirai-1.1-R (src/baselines/run_moirai.py)
+# gluonts==0.14.4    # required by run_moirai.py
