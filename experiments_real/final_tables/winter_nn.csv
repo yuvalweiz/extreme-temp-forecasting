@@ -1,0 +1,7 @@
+family,region,n,anchor_MAE
+ours-deployed(paper),Center,5,1.275
+ours-deployed(paper),Negev,5,1.331
+ours-deployed(paper),Northwest,5,1.44
+ours-NN,Center,3,1.295
+ours-NN,Negev,3,1.38
+ours-NN,Northwest,3,1.364

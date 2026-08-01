@@ -204,6 +204,9 @@ def run_one_config(cfg, loaders, ns, hot_thr, scheduler=None, ema_decay=None,
     os.makedirs(cfg.ckpt_root, exist_ok=True)
     run_id = f"{cfg.run_tag}__{cfg.head_type}__a{cfg.under_alpha_ext:g}__b{cfg.beta_hot:g}__s{cfg.seed}"
     run_dir = os.path.join(cfg.ckpt_root, run_id); os.makedirs(run_dir, exist_ok=True)
+    if os.environ.get("SAVE_CKPT", "0") == "1" and best_state is not None:   # persist weights
+        torch.save({"state_dict": best_state, "best_ep": best_ep, "run_id": run_id},
+                   os.path.join(run_dir, "best.pt"))
     df_test.drop(columns=["tag_dt"]).to_csv(os.path.join(run_dir, "preds_test.csv"), index=False)
     df_val.drop(columns=["tag_dt"]).to_csv(os.path.join(run_dir, "preds_val.csv"), index=False)
     meta = dict(run_id=run_id, region_dir=cfg.dataset_dir, head_type=cfg.head_type,
@@ -246,7 +249,7 @@ def run_one_config(cfg, loaders, ns, hot_thr, scheduler=None, ema_decay=None,
 # COLD (winter / MIN targets) — opt-in via COLD=1. Faithful to
 # run_grid_cold_winter.py; the hot path above is untouched.
 # ============================================================
-def build_cold_data(cfg, cache=False, geo=None, tabular=False):
+def build_cold_data(cfg, cache=False, geo=None, tabular=False, y_override=None):
     """Loaders/ns/train_cold_sorted/cold_thr for the MIN (winter) dataset.
 
     Naming differs from hot: norm = norm_stats_extremes_full_MIN.npz, splits =
@@ -281,13 +284,31 @@ def build_cold_data(cfg, cache=False, geo=None, tabular=False):
         return df.sort_values("tag").reset_index(drop=True)
 
     dfs = {s: _load_split(s) for s in ["train", "val", "test"]}
+    if y_override is not None:   # TARGETS override: drop uncovered tags + y stats from override
+        keys = {str(t)[:10] for t in y_override}
+        n0 = {s: len(dfs[s]) for s in dfs}
+        dfs = {s: dfs[s][dfs[s]["tag"].dt.strftime("%Y-%m-%d").isin(keys)].reset_index(drop=True)
+               for s in dfs}
+        drops = {s: n0[s] - len(dfs[s]) for s in dfs if n0[s] != len(dfs[s])}
+        if drops:
+            print(f"[cold data] y_override: dropped tags without override targets {drops}")
+        ov = {str(t)[:10]: v for t, v in y_override.items()}
+        Ytr = np.stack([ov[t] for t in dfs["train"]["tag"].dt.strftime("%Y-%m-%d")]).astype(np.float32)
+        ns = dict(ns)
+        ns["y_median"] = np.median(Ytr, 0).astype(np.float32)
+        ns["y_iqr"] = (np.quantile(Ytr, 0.75, 0) - np.quantile(Ytr, 0.25, 0)).astype(np.float32)
+        y_override = ov
     ds = {s: FullSampleDataset(dfs[s], d, ns, cfg.keep_dom, history_window=None,
-                               y_override=None, cache=cache, geo=geo, tabular=tabular, lapse=None)
+                               y_override=y_override, cache=cache, geo=geo, tabular=tabular, lapse=None)
           for s in dfs}
 
     # TRAIN cold distribution (output 0 only) — ECDF weights + p10 threshold, no leakage
-    train_cold_raw = np.array([float(np.load(p, allow_pickle=True)["y"].astype(np.float32)[0])
-                               for p in ds["train"].df["path"].tolist()], dtype=np.float32)
+    if y_override is not None:
+        train_cold_raw = np.array([y_override[t][0] for t in
+                                   dfs["train"]["tag"].dt.strftime("%Y-%m-%d")], dtype=np.float32)
+    else:
+        train_cold_raw = np.array([float(np.load(p, allow_pickle=True)["y"].astype(np.float32)[0])
+                                   for p in ds["train"].df["path"].tolist()], dtype=np.float32)
     train_cold_sorted = np.sort(train_cold_raw)
     cold_thr = float(np.quantile(train_cold_raw, cfg.extreme_q))   # p10 (low tail)
 
@@ -427,6 +448,9 @@ def run_one_config_cold(cfg, loaders, ns, train_cold_sorted, cold_thr, k=2.0,
     os.makedirs(cfg.ckpt_root, exist_ok=True)
     run_id = f"{cfg.run_tag}__COLD__{cfg.head_type}__k{k:g}__a{cfg.under_alpha_ext:g}__b{cfg.beta_hot:g}__s{cfg.seed}"
     run_dir = os.path.join(cfg.ckpt_root, run_id); os.makedirs(run_dir, exist_ok=True)
+    if os.environ.get("SAVE_CKPT", "0") == "1" and best_state is not None:   # persist weights
+        torch.save({"state_dict": best_state, "best_ep": best_ep, "run_id": run_id},
+                   os.path.join(run_dir, "best.pt"))
     df_test.drop(columns=["tag_dt"]).to_csv(os.path.join(run_dir, "preds_test.csv"), index=False)
     df_val.drop(columns=["tag_dt"]).to_csv(os.path.join(run_dir, "preds_val.csv"), index=False)
     meta = dict(run_id=run_id, region_dir=cfg.dataset_dir, mode="COLD", head_type=cfg.head_type,
@@ -466,21 +490,47 @@ def run_one_config_cold(cfg, loaders, ns, train_cold_sorted, cold_thr, k=2.0,
 
 
 def build_target_override(region, ranks):
-    """{tag: raw order-stats at 1-indexed `ranks`} reusing series.py's window construction
-    (frames X unchanged — only the prediction targets change)."""
+    """{tag: raw targets} reusing series.py's window construction (frames X unchanged —
+    only the prediction targets change). Each element of `ranks` is either an int r
+    (1-indexed order statistic, as before) or a string 'tK' (mean of the K most
+    extreme days — the top-k-mean output format)."""
     import pandas as pd, numpy as np
     sys.path.insert(0, os.path.join(_SRC, "baselines"))
     import series as S
     y = S.build_cluster_daily(region)["max_dry_temp"].dropna().sort_index()
     base = S.build_targets(y, hottest=True)
-    idx = [r - 1 for r in ranks]
+    need = max(int(str(r).lstrip("t")) for r in ranks)
     out = {}
     for _, row in base.iterrows():
         pp = pd.Timestamp(row["pred_point"])
         fut = y.reindex(pd.date_range(row["tag"], pp + pd.Timedelta(days=30), freq="D")).dropna().to_numpy(np.float32)
         s = np.sort(fut)[::-1]
-        if len(s) > max(idx):
-            out[row["tag"]] = np.array([s[i] for i in idx], np.float32)
+        if len(s) > need - 1:
+            out[row["tag"]] = np.array(
+                [s[:int(str(r)[1:])].mean() if str(r).startswith("t") else s[int(r) - 1]
+                 for r in ranks], np.float32)
+    return out
+
+
+def build_target_override_cold(region, ranks):
+    """COLD (winter/MIN) counterpart of build_target_override: targets from the regional
+    daily MINIMUM series, ranks counted from the COLD end ('t5' = mean of the 5 coldest
+    days of the window)."""
+    import pandas as pd, numpy as np
+    sys.path.insert(0, os.path.join(_SRC, "baselines"))
+    import series as S
+    y = S.build_cluster_daily(region, cols=["min_dry_temp"])["min_dry_temp"].dropna().sort_index()
+    base = S.build_targets(y, hottest=False)
+    need = max(int(str(r).lstrip("t")) for r in ranks)
+    out = {}
+    for _, row in base.iterrows():
+        pp = pd.Timestamp(row["pred_point"])
+        fut = y.reindex(pd.date_range(row["tag"], pp + pd.Timedelta(days=30), freq="D")).dropna().to_numpy(np.float32)
+        s = np.sort(fut)                                     # ascending: coldest first
+        if len(s) > need - 1:
+            out[row["tag"]] = np.array(
+                [s[:int(str(r)[1:])].mean() if str(r).startswith("t") else s[int(r) - 1]
+                 for r in ranks], np.float32)
     return out
 
 
@@ -926,6 +976,8 @@ def main():
     if "ALPHA" in E: cfg.under_alpha_ext = float(E["ALPHA"])
     if "BETA" in E:  cfg.beta_hot = float(E["BETA"])
     if "DROPOUT" in E: cfg.dropout = float(E["DROPOUT"])
+    if "LR_HEAD" in E: cfg.lr_head = float(E["LR_HEAD"])
+    if "LR_BB" in E: cfg.lr_backbone = float(E["LR_BB"])
     if "SEED" in E:  cfg.seed = int(E["SEED"])
     if "EXTREME_Q" in E: cfg.extreme_q = float(E["EXTREME_Q"])
     if "EPOCHS" in E: cfg.epochs = int(E["EPOCHS"])
@@ -949,7 +1001,7 @@ def main():
 
     y_override = None
     if "TARGETS" in E:
-        ranks = [int(x) for x in E["TARGETS"].split(",")]
+        ranks = [x if x.startswith("t") else int(x) for x in E["TARGETS"].split(",")]
         cfg.out_dim = len(ranks)
         if "OUT_WEIGHTS" in E:                             # explicit env wins (u-grid ablation)
             cfg.out_weights = tuple(float(x) for x in E["OUT_WEIGHTS"].split(","))
@@ -957,7 +1009,10 @@ def main():
         else:
             cfg.out_weights = tuple(1.0 for _ in ranks)    # equal weights (published convention)
         cfg._targets = ranks
-        y_override = build_target_override(region, ranks)
+        if E.get("COLD", "0") == "1":
+            y_override = build_target_override_cold(region, ranks)
+        else:
+            y_override = build_target_override(region, ranks)
         print(f"[targets] ranks={ranks} -> out_dim={cfg.out_dim} ({len(y_override)} tags overridden)")
 
     pretrained_path = E.get("PRETRAINED") or None
@@ -995,26 +1050,30 @@ def main():
     if cold:                                  # ---- COLD (winter/MIN) opt-in path ----
         k = float(E.get("K", "2.0"))          # percentile weight k (grid swept this; class default 2.0)
         def _cold_sorted_from_dir(d):
-            # sorted TRAIN y[:,0] (coldest) from a stationvec_MIN-style dir — ECDF basis, no leakage
+            # sorted TRAIN y[:,0] (coldest) from a stationvec_MIN-style dir — ECDF basis, no leakage.
+            # With a TARGETS override, the ECDF basis comes from the override targets instead.
             import pandas as pd
             df = pd.read_csv(os.path.join(d, "split_train.csv"))
-            ys = [float(np.load(os.path.join(d, os.path.basename(p)), allow_pickle=True)["y"][0])
-                  for p in df["path"]]
+            if y_override is not None:
+                ys = [float(y_override[str(t)][0]) for t in df["tag"] if str(t) in y_override]
+            else:
+                ys = [float(np.load(os.path.join(d, os.path.basename(p)), allow_pickle=True)["y"][0])
+                      for p in df["path"]]
             return np.sort(np.array(ys, dtype=np.float32))
         if E.get("STATIONVEC", "0") == "1":   # cold FAIR TABULAR: stationvec_MIN dir (612-dim)
             from pipeline.data import build_stationvec_data
-            loaders, ns, cold_thr = build_stationvec_data(cfg, cfg.dataset_dir)
+            loaders, ns, cold_thr = build_stationvec_data(cfg, cfg.dataset_dir, y_override=y_override)
             train_cold_sorted = _cold_sorted_from_dir(cfg.dataset_dir)
             tabular = True
         elif E.get("PAPERW"):                 # cold SYNTH frames: weights x stationvec_MIN vectors
             from pipeline.data import build_synth_data
             loaders, ns, cold_thr = build_synth_data(
                 cfg, cfg.dataset_dir, E["PAPERW"], cache=cache,
-                masks_path=E.get("PAPERW_MASKS") or None)
+                masks_path=E.get("PAPERW_MASKS") or None, y_override=y_override)
             train_cold_sorted = _cold_sorted_from_dir(cfg.dataset_dir)
-        else:                                 # original disk-frames cold path (unchanged)
+        else:                                 # original disk-frames cold path (y_override-aware)
             loaders, ns, train_cold_sorted, cold_thr = build_cold_data(
-                cfg, cache=cache, geo=geo, tabular=tabular)
+                cfg, cache=cache, geo=geo, tabular=tabular, y_override=y_override)
         run_one_config_cold(cfg, loaders, ns, train_cold_sorted, cold_thr, k=k,
                             pretrained_path=pretrained_path, geo_chans=geo_chans,
                             warmup=warmup, deterministic=deterministic, tabular=tabular,
@@ -1038,7 +1097,7 @@ def main():
             hybrid=hybrid, y_override=y_override)       # opt-in frames+sv hybrid batches
     elif E.get("STATIONVEC", "0") == "1":    # fair tabular ablation: flat all-station (180,612) vectors
         from pipeline.data import build_stationvec_data
-        loaders, ns, hot_thr = build_stationvec_data(cfg, cfg.dataset_dir)
+        loaders, ns, hot_thr = build_stationvec_data(cfg, cfg.dataset_dir, y_override=y_override)
         tabular = True                       # -> HeadOnlyModel (F=612), no ConvNeXt
     else:
         loaders, ns, hot_thr = build_data(cfg, history_window=window, y_override=y_override,

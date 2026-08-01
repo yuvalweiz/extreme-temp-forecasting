@@ -1,0 +1,11 @@
+== SELECTION-CRITERION verdict: anchor test all/ext (3-seed ens, topk preds) ==
+-- HOT --
+  Center     select=all: 1.947/2.705 | select=ext: 2.112/1.980 | select=paper(frozen): 2.113/1.994
+  Negev      select=all: 1.720/1.668 | select=ext: 2.098/1.418 | select=paper(frozen): 2.007/1.447
+  Northwest  select=all: 1.870/3.895 | select=ext: 1.837/2.683 | select=paper(frozen): 1.930/2.064
+  REGION-MEAN select=all: 1.846/2.756 | select=ext: 2.016/2.027 | select=paper(frozen): 2.017/1.835
+-- COLD --
+  Center     select=all: 1.257/2.294 | select=ext: 1.447/1.864 | select=paper(frozen): 1.275/2.061
+  Negev      select=all: 1.332/2.723 | select=ext: 1.454/2.395 | select=paper(frozen): 1.331/2.487
+  Northwest  select=all: 1.382/2.627 | select=ext: 1.557/2.234 | select=paper(frozen): 1.440/2.642
+  REGION-MEAN select=all: 1.324/2.548 | select=ext: 1.486/2.164 | select=paper(frozen): 1.349/2.396

@@ -1,0 +1,9 @@
+== HOT : OURS vs ARTICLE tab | per-cell block bootstrap (B=10,000) ==
+  Center     | anc_all: d=-0.693 p=0.0026 SIG-WIN | anc_ext: d=-0.021 p=0.8748 win-ns | soft_all: d=-0.277 p=0.0026 SIG-WIN | soft_ext: d=-0.382 p=0.1030 win-ns
+  Negev      | anc_all: d=-0.816 p=0.0002 SIG-WIN | anc_ext: d=-0.006 p=0.9184 win-ns | soft_all: d=-0.280 p=0.0230 SIG-WIN | soft_ext: d=-0.735 p=0.0006 SIG-WIN
+  Northwest  | anc_all: d=-0.659 p=0.0000 SIG-WIN | anc_ext: d=-0.875 p=0.0096 SIG-WIN | soft_all: d=-0.075 p=0.3392 win-ns | soft_ext: d=-0.057 p=0.8598 win-ns
+
+== COLD : OURS vs ARTICLE tab | per-cell block bootstrap (B=10,000) ==
+  Center     | anc_all: d=-0.466 p=0.0000 SIG-WIN | anc_ext: d=+0.047 p=0.7542 loss-ns | soft_all: d=-0.065 p=0.4030 win-ns | soft_ext: d=-0.358 p=0.0000 SIG-WIN
+  Negev      | anc_all: d=-0.545 p=0.0000 SIG-WIN | anc_ext: d=+0.463 p=0.0484 SIG-LOSS | soft_all: d=-0.402 p=0.0000 SIG-WIN | soft_ext: d=+0.073 p=0.7896 loss-ns
+  Northwest  | anc_all: d=-0.317 p=0.0002 SIG-WIN | anc_ext: d=+0.359 p=0.1544 loss-ns | soft_all: d=-0.196 p=0.0012 SIG-WIN | soft_ext: d=-0.007 p=0.8670 win-ns

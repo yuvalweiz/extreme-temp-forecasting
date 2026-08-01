@@ -12,10 +12,13 @@ by a lightweight temporal-fusion head. The model is trained with an extreme-weig
 loss that extra-penalizes *under*-prediction on the hottest samples and predicts four
 order statistics of the next 30 days — the 1st/3rd/7th/15th hottest day (coldest, in
 the winter setting) — for three Israeli climate regions (Center, Negev, Northwest).
-Against classical (SARIMAX, Prophet), tabular deep (Tab-LSTM), and zero-shot
-foundation-model (TimesFM 2.5, Moirai) baselines under an identical protocol, the
-spatial model is the most accurate on all-case and extreme-case month-ahead extremes,
-which is what electricity peak-demand planning needs.
+Against classical (SARIMAX, Prophet), per-station tabular deep (Tab-LSTM), and
+zero-shot foundation-model (TimesFM 2.5, Moirai) baselines under an identical
+seed-ensembled protocol, the spatial model is the most accurate on the month-ahead
+extreme-day targets — significantly so against every baseline on the primary targets
+pooled across regions, and against the matched spatial-structure ablation on the
+coldest-day target in every region — with by far the lowest under-prediction of the
+extremes, which is what electricity peak-demand planning needs.
 
 ---
 
@@ -51,8 +54,9 @@ single source of truth; every script resolves paths through it):
 Small files committed to git — enough to **regenerate every reported table** and to
 verify the code paths:
 
-* `data/published_predictions/Summer/` — the published per-model prediction CSVs
-  (ours + all baselines, per region) that the paper's tables are computed from.
+* `data/published_predictions/{Summer,Winter}/` — the published per-model prediction
+  CSVs (ours + all baselines, per region, both seasons) that the paper's tables are
+  computed from.
 * `data/dataset_meta/<Region>[_MIN]/` — the canonical chronological split CSVs,
   normalization stats, and `y_values_*.csv` (the per-sample targets, extracted
   verbatim from the dataset, so thresholds/tables recompute from a bare clone).
@@ -117,6 +121,31 @@ evaluate src/eval/reproduce_metrics.py + run_significance.py + per_target_metric
 Interpolation-quality study: `src/eval/loso_interpolation.py` (daily CSVs -> LOSO MAE
 per kernel). Baselines: `src/baselines/` (daily CSVs -> cluster series -> targets).
 
+### 3b. Learned station-to-grid interpolation (NN variant)
+
+The learned interpolation replaces the fixed elevation-aware kernel with a light
+attention set-regressor (~200k parameters, one network for all 9 features; weights and
+all normalization statistics fitted **only on training-period days**, so the time split
+is preserved by construction). The fitted network is versioned in this repo
+(`experiments_real/nninterp/nninterp.pt`, 512 KB) for exact reproduction; the three
+scripts regenerate everything from the daily CSVs:
+
+```bash
+cd experiments_real/nninterp
+python build_daily_sv.py       # daily station matrix + train-period norm stats (~1 min)
+python train_nninterp.py       # trains the interpolation network (~10 min GPU)
+                               #   + prints the LOSO test-period MAE (paper: 1.04 C
+                               #     vs 1.18 C for the tuned kernel)
+python gen_nn_bank.py          # writes the full daily frame bank framebank_nn/ (~15 min)
+```
+
+Training the forecaster on the learned frames = the standard training command plus:
+
+```bash
+FRAMEBANK=<...>/framebank_nn FRAMEBANK_NS=<...>/framebank_nn/norm_stats_x.npz \
+CACHE=0 WINDOW=180 python -m pipeline.train ...   # rest identical
+```
+
 ## 4. Quickstart
 
 ### 4.1 Reproduce the paper's tables (CPU; repo + git-bundled data only)
@@ -127,6 +156,13 @@ python src/eval/reproduce_metrics.py    # metric table  -> results/summer_metric
 python src/eval/per_target_metrics.py   # per-target p1/p3/p7/p15 MAE -> results/summer_per_target.csv
 python src/eval/run_significance.py     # moving-block bootstrap + Holm -> results/summer_significance.csv
                                         #   (B=10000, ~10 min CPU; N_BOOT=1000 for a quick pass)
+# full-evaluation-set protocol (the resubmission's tables): row-level actual-vs-predicted
+# CSVs + per-region MAE/RMSE for BOTH seasons, verified vs the frozen references
+python src/eval/export_actual_vs_predicted.py   # -> results/actual_vs_predicted/ (PASS @ max|d|=0.000000)
+python src/eval/run_significance_unified.py     # -> results/actual_vs_predicted/significance_unified.csv
+# FINAL manuscript numbers: results/actual_vs_predicted_corrected/ bundles the row-level
+# predictions of the corrected seed-ensembled models (see its README); every table cell
+# of the final paper recomputes from those files.
 python src/eval/dataset_stats.py        # dataset summary table -> results/dataset_stats.md
 python src/eval/downstream_proxy.py     # peak-demand planning proxy -> results/downstream_proxy.csv
 python src/eval/plot_pred_vs_true.py    # p1 actual-vs-predicted figures -> results/figures/

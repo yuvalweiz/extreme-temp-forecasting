@@ -1,0 +1,6 @@
+{
+  "missing_pct_overall": 7.785080236573815,
+  "missing_pct_train": 10.573666303111834,
+  "missing_pct_test": 1.8581452188718626,
+  "stations_fully_missing_in_train": []
+}

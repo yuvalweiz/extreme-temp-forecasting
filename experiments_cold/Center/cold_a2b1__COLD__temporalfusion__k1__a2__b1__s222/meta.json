@@ -1,0 +1,54 @@
+{
+  "run_id": "cold_a2b1__COLD__temporalfusion__k1__a2__b1__s222",
+  "region_dir": "/home/weizyuv/Deep Learning Models/Cluster Center/Winter Models/dataset_FULL_MIN_h180_next30_DOM_1_7_14_21_28",
+  "mode": "COLD",
+  "head_type": "temporalfusion",
+  "k": 1.0,
+  "under_alpha_ext": 2.0,
+  "beta_hot": 1.0,
+  "dropout": 0.1,
+  "extreme_q": 0.1,
+  "cold_thr": 5.116666793823242,
+  "out_weights": [
+    1.0,
+    0.5,
+    0.25,
+    0.125
+  ],
+  "seed": 222,
+  "best_ep": 26,
+  "scheduler": "cosine",
+  "ema_score_alpha": 0.35,
+  "selection": "avg(val_mae_cold_all, val_mae_cold_ext) output 0 (EMA-smoothed)",
+  "val": {
+    "n": 143,
+    "n_ext": 10,
+    "mae_cold_all": 1.115649938583374,
+    "mae_cold_ext": 0.47666794061660767,
+    "too_warm_mae_ext": 0.3076324462890625,
+    "too_warm_rate_ext": 0.7,
+    "mae_out_all": [
+      1.115649938583374,
+      1.1956114768981934,
+      1.1651668548583984,
+      0.9969936013221741
+    ],
+    "mae_mean_all": 1.1183555126190186
+  },
+  "test": {
+    "n": 239,
+    "n_ext": 23,
+    "mae_cold_all": 1.3312981128692627,
+    "mae_cold_ext": 2.085101366043091,
+    "too_warm_mae_ext": 2.085101366043091,
+    "too_warm_rate_ext": 1.0,
+    "mae_out_all": [
+      1.3312981128692627,
+      1.2578917741775513,
+      1.1107170581817627,
+      0.9908443093299866
+    ],
+    "mae_mean_all": 1.1726878881454468
+  },
+  "elapsed_min": 15.816484061876933
+}

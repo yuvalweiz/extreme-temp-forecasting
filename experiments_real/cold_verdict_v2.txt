@@ -1,0 +1,17 @@
+=== Center (thr=5.12)  picks: anc=blend_tk soft=ctpk_topk | fair: cftpk_topk/cftpk_topk ===
+  anc_all   OURS 1.243 | ART 1.741 WIN  | FAIR 1.315 WIN
+  anc_ext   OURS 2.210 | ART 2.014 LOSS | FAIR 2.661 WIN
+  soft_all  OURS 0.980 | ART 1.052 WIN  | FAIR 0.975 LOSS
+  soft_ext  OURS 1.453 | ART 1.738 WIN  | FAIR 1.400 LOSS
+=== Negev (thr=3.27)  picks: anc=pool10 soft=blend_tk | fair: cft5/cft5 ===
+  anc_all   OURS 1.322 | ART 1.876 WIN  | FAIR 1.501 WIN
+  anc_ext   OURS 2.352 | ART 2.024 LOSS | FAIR 2.541 WIN
+  soft_all  OURS 1.002 | ART 1.468 WIN  | FAIR 1.100 WIN
+  soft_ext  OURS 1.560 | ART 1.606 WIN  | FAIR 1.795 WIN
+=== Northwest (thr=4.58)  picks: anc=pool10 soft=pool10 | fair: cftpk_topk/cftpk_topk ===
+  anc_all   OURS 1.397 | ART 1.757 WIN  | FAIR 1.483 WIN
+  anc_ext   OURS 2.668 | ART 2.283 LOSS | FAIR 3.167 WIN
+  soft_all  OURS 0.992 | ART 1.201 WIN  | FAIR 1.062 WIN
+  soft_ext  OURS 1.952 | ART 1.887 LOSS | FAIR 1.864 LOSS
+
+TOTAL: 8/12 vs ARTICLE winter tab | 9/12 vs fair tab (both sides val-selected)

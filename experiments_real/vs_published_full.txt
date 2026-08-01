@@ -1,0 +1,12 @@
+
+===== HOT: OURS vs PUBLISHED spatial (ConvNeXt-TFT) =====
+Center     | anc_all: OURS 2.113 PUB 2.265 win-ns(p=0.124) | anc_ext: OURS 1.994 PUB 1.676 loss-ns(p=0.079) | soft_all: OURS 1.267 PUB 1.512 SIG-WIN(p=0.000) | soft_ext: OURS 1.379 PUB 1.559 SIG-WIN(p=0.042)
+Negev      | anc_all: OURS 2.007 PUB 2.135 win-ns(p=0.219) | anc_ext: OURS 1.447 PUB 1.238 loss-ns(p=0.126) | soft_all: OURS 1.537 PUB 1.557 win-ns(p=0.672) | soft_ext: OURS 1.165 PUB 1.527 SIG-WIN(p=0.004)
+Northwest  | anc_all: OURS 1.930 PUB 2.081 win-ns(p=0.129) | anc_ext: OURS 2.064 PUB 1.535 loss-ns(p=0.143) | soft_all: OURS 1.280 PUB 1.328 win-ns(p=0.394) | soft_ext: OURS 1.320 PUB 1.360 win-ns(p=0.786)
+TOTAL HOT: 9/12 vs published
+
+===== COLD: OURS vs PUBLISHED spatial (ConvNeXt-TFT) =====
+Center     | anc_all: OURS 1.275 PUB 1.294 win-ns(p=0.789) | anc_ext: OURS 2.061 PUB 1.873 SIG-LOSS(p=0.011) | soft_all: OURS 0.986 PUB 1.010 win-ns(p=0.689) | soft_ext: OURS 1.380 PUB 1.768 SIG-WIN(p=0.000)
+Negev      | anc_all: OURS 1.331 PUB 1.392 win-ns(p=0.121) | anc_ext: OURS 2.487 PUB 2.320 loss-ns(p=0.132) | soft_all: OURS 1.066 PUB 1.097 win-ns(p=0.446) | soft_ext: OURS 1.678 PUB 1.538 loss-ns(p=0.107)
+Northwest  | anc_all: OURS 1.440 PUB 1.468 win-ns(p=0.643) | anc_ext: OURS 2.642 PUB 2.717 win-ns(p=0.575) | soft_all: OURS 1.006 PUB 1.139 SIG-WIN(p=0.005) | soft_ext: OURS 1.879 PUB 2.259 SIG-WIN(p=0.015)
+TOTAL COLD: 9/12 vs published

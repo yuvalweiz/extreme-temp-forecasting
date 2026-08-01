@@ -1,0 +1,52 @@
+{
+  "run_id": "diag_ked__temporalfusion__a2__b1__s111",
+  "region_dir": "/home/weizyuv/stationvec_Center",
+  "head_type": "temporalfusion",
+  "under_alpha_ext": 2.0,
+  "beta_hot": 1.0,
+  "dropout": 0.1,
+  "extreme_q": 0.95,
+  "hot_thr": 38.650001525878906,
+  "out_weights": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "seed": 111,
+  "best_ep": 7,
+  "scheduler": null,
+  "ema_decay": null,
+  "window": null,
+  "val": {
+    "n": 143,
+    "n_ext": 24,
+    "mae_mean": 1.6882960796356201,
+    "mae_out": [
+      2.3928239345550537,
+      1.7503464221954346,
+      1.4499692916870117,
+      1.1600444316864014
+    ],
+    "mae_mean_ext": 1.873028039932251,
+    "mae_hot_ext": 2.928208112716675,
+    "mae_hot_all": 2.3928239345550537,
+    "under_rate_ext_all_outs": 0.7083333333333334
+  },
+  "test": {
+    "n": 238,
+    "n_ext": 24,
+    "mae_mean": 1.520944356918335,
+    "mae_out": [
+      2.0200915336608887,
+      1.6522098779678345,
+      1.264407753944397,
+      1.1470686197280884
+    ],
+    "mae_mean_ext": 1.9247974157333374,
+    "mae_hot_ext": 2.9401657581329346,
+    "mae_hot_all": 2.0200915336608887,
+    "under_rate_ext_all_outs": 0.6770833333333334
+  },
+  "elapsed_min": 127.01617702643077
+}

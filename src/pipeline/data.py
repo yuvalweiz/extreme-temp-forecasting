@@ -40,6 +40,23 @@ def _abspath(dataset_dir, p):
     return os.path.join(dataset_dir, os.path.basename(p))
 
 
+_FRAMEBANK = None
+
+
+def _load_framebank():
+    """Opt-in (FRAMEBANK=<dir> env): full daily frame stack (D,C,H,W) + date index.
+    Lets history_window EXCEED the stored per-sample T (long-window ablation) by slicing
+    windows straight out of the bank instead of the sample npz. Raw values; the caller's
+    normal normalization path applies."""
+    global _FRAMEBANK
+    if _FRAMEBANK is None:
+        d = os.environ["FRAMEBANK"]
+        dates = pd.DatetimeIndex([l.strip() for l in open(os.path.join(d, "dates.txt")) if l.strip()])
+        bank = np.load(os.path.join(d, "bank.npy"), mmap_mode="r")
+        _FRAMEBANK = (dates, bank)
+    return _FRAMEBANK
+
+
 class FullSampleDataset(Dataset):
     """history_window: keep only the last W frames of the (T,C,H,W) clip (window ablation,
     stays inside the spatial pipeline — no rebuild). None = full T.
@@ -69,6 +86,15 @@ class FullSampleDataset(Dataset):
             print(f"[Dataset] skipped corrupted/missing-key files: {bad}")
         if len(self.df) == 0:
             raise RuntimeError("Dataset empty after filtering corrupted files.")
+        self.bank = self.bank_dates = None
+        if os.environ.get("FRAMEBANK"):
+            self.bank_dates, self.bank = _load_framebank()
+            H = int(self.history_window or 180)
+            first_ok = self.bank_dates[0] + pd.Timedelta(days=H)   # window = H days ending tag-1d
+            n0 = len(self.df)
+            self.df = self.df[pd.to_datetime(self.df["tag"]) >= first_ok].reset_index(drop=True)
+            if len(self.df) < n0:
+                print(f"[FRAMEBANK] dropped {n0 - len(self.df)} samples lacking full {H}-day history")
         if cache:   # preload normalized X + raw y into RAM once (kills per-epoch npz decompression)
             self._cache = [self._materialize(i) for i in range(len(self.df))]
 
@@ -84,9 +110,16 @@ class FullSampleDataset(Dataset):
     def _materialize(self, idx):
         row = self.df.iloc[idx]
         tag = row["tag"].strftime("%Y-%m-%d")
-        with np.load(row["path"], allow_pickle=True) as z:
-            X = z["X"].astype(np.float32)
-            y_raw = z["y"].astype(np.float32)
+        if self.bank is not None:
+            H = int(self.history_window or 180)
+            i1 = self.bank_dates.get_loc(pd.Timestamp(tag) - pd.Timedelta(days=1))
+            X = np.asarray(self.bank[i1 - H + 1:i1 + 1], dtype=np.float32)
+            with np.load(row["path"], allow_pickle=True) as z:
+                y_raw = z["y"].astype(np.float32)
+        else:
+            with np.load(row["path"], allow_pickle=True) as z:
+                X = z["X"].astype(np.float32)
+                y_raw = z["y"].astype(np.float32)
         if self.y_override is not None:
             y_raw = self.y_override[tag].astype(np.float32)
         C = self.ns["C"]
@@ -692,6 +725,10 @@ def build_data(cfg, history_window=None, y_override=None, cache=False, geo=None,
     lapse=True: add the saved lapse-rate correction to raw frames + use lapse norm stats (A3).
     cache=True preloads normalized samples into RAM (kills per-epoch npz decompression)."""
     ns = load_norm_stats(cfg.dataset_dir, cfg.tag_norm)
+    if os.environ.get("FRAMEBANK_NS"):   # x-stats override for a FRAMEBANK with different frames
+        z = np.load(os.environ["FRAMEBANK_NS"])
+        ns = dict(ns); ns["x_mean"] = z["x_mean"].astype(np.float32); ns["x_std"] = z["x_std"].astype(np.float32)
+        print(f"[FRAMEBANK_NS] x stats overridden from {os.environ['FRAMEBANK_NS']}")
     dfs = {s: load_split(cfg.dataset_dir, s, cfg.tag_norm, cfg.keep_dom) for s in ["train", "val", "test"]}
 
     lapse_corr = None
@@ -710,7 +747,7 @@ def build_data(cfg, history_window=None, y_override=None, cache=False, geo=None,
         ns["y_iqr"] = (np.quantile(Ytr, 0.75, 0) - np.quantile(Ytr, 0.25, 0)).astype(np.float32)
         hot_thr = float(np.quantile(Ytr[:, 0], cfg.extreme_q))
     cdir = os.path.join(cfg.dataset_dir, "_mmcache")
-    use_mmap = cache and os.path.exists(os.path.join(cdir, "train_X.npy"))
+    use_mmap = cache and os.path.exists(os.path.join(cdir, "train_X.npy")) and not os.environ.get("FRAMEBANK")
     if use_mmap:
         ds = {s: MmapDataset(cdir, s, ns, history_window, y_override, geo, tabular, lapse_corr) for s in dfs}
         if y_override is None:

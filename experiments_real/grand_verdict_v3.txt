@@ -1,0 +1,36 @@
+
+================ HOT ================
+Center     picks: anc=opt3 soft=opa3_opt  -> 4/4 vs ARTICLE
+   anc_all   OURS 2.113  ART 2.805  WIN  (d=+0.693)
+   anc_ext   OURS 1.994  ART 2.015  WIN  (d=+0.021)
+   soft_all  OURS 1.267  ART 1.544  WIN  (d=+0.277)
+   soft_ext  OURS 1.379  ART 1.761  WIN  (d=+0.382)
+Negev      picks: anc=Ne_os3 soft=Ne_kt  -> 3/4 vs ARTICLE
+   anc_all   OURS 2.343  ART 2.823  WIN  (d=+0.480)
+   anc_ext   OURS 1.696  ART 1.453  LOSS (d=-0.243)
+   soft_all  OURS 1.470  ART 1.817  WIN  (d=+0.347)
+   soft_ext  OURS 1.327  ART 1.900  WIN  (d=+0.573)
+Northwest  picks: anc=No_pbo soft=nw_ked  -> 4/4 vs ARTICLE
+   anc_all   OURS 1.955  ART 2.666  WIN  (d=+0.711)
+   anc_ext   OURS 1.627  ART 2.229  WIN  (d=+0.602)
+   soft_all  OURS 1.280  ART 1.355  WIN  (d=+0.075)
+   soft_ext  OURS 1.320  ART 1.377  WIN  (d=+0.057)
+TOTAL HOT: 11/12 vs ARTICLE tabular
+
+================ COLD ================
+Center     picks: anc=Ce_ckeda3 soft=Ce_cpb03  -> 3/4 vs ARTICLE
+   anc_all   OURS 1.302  ART 1.741  WIN  (d=+0.439)
+   anc_ext   OURS 2.096  ART 2.014  LOSS (d=-0.082)
+   soft_all  OURS 0.991  ART 1.052  WIN  (d=+0.060)
+   soft_ext  OURS 1.546  ART 1.738  WIN  (d=+0.193)
+Negev      picks: anc=Ne_cked soft=Ne_cpb03  -> 2/4 vs ARTICLE
+   anc_all   OURS 1.334  ART 1.876  WIN  (d=+0.542)
+   anc_ext   OURS 2.373  ART 2.024  LOSS (d=-0.350)
+   soft_all  OURS 1.041  ART 1.468  WIN  (d=+0.427)
+   soft_ext  OURS 1.650  ART 1.606  LOSS (d=-0.045)
+Northwest  picks: anc=No_cked soft=No_ckt  -> 2/4 vs ARTICLE
+   anc_all   OURS 1.446  ART 1.757  WIN  (d=+0.311)
+   anc_ext   OURS 2.496  ART 2.283  LOSS (d=-0.213)
+   soft_all  OURS 1.004  ART 1.201  WIN  (d=+0.197)
+   soft_ext  OURS 1.917  ART 1.887  LOSS (d=-0.030)
+TOTAL COLD: 7/12 vs ARTICLE tabular

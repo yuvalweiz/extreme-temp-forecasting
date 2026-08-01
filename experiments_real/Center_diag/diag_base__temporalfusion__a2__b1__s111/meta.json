@@ -1,0 +1,52 @@
+{
+  "run_id": "diag_base__temporalfusion__a2__b1__s111",
+  "region_dir": "/home/weizyuv/Deep Learning Models/Cluster Center/dataset_FULL_h180_next30_DOM_1_7_14_21_28",
+  "head_type": "temporalfusion",
+  "under_alpha_ext": 2.0,
+  "beta_hot": 1.0,
+  "dropout": 0.1,
+  "extreme_q": 0.95,
+  "hot_thr": 38.650001525878906,
+  "out_weights": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "seed": 111,
+  "best_ep": 9,
+  "scheduler": null,
+  "ema_decay": null,
+  "window": null,
+  "val": {
+    "n": 143,
+    "n_ext": 24,
+    "mae_mean": 1.7533453702926636,
+    "mae_out": [
+      2.407893180847168,
+      1.8969826698303223,
+      1.3982824087142944,
+      1.31022310256958
+    ],
+    "mae_mean_ext": 1.6192972660064697,
+    "mae_hot_ext": 2.526515483856201,
+    "mae_hot_all": 2.407893180847168,
+    "under_rate_ext_all_outs": 0.6666666666666666
+  },
+  "test": {
+    "n": 238,
+    "n_ext": 24,
+    "mae_mean": 1.5830122232437134,
+    "mae_out": [
+      2.0121026039123535,
+      1.7494254112243652,
+      1.4026507139205933,
+      1.1678701639175415
+    ],
+    "mae_mean_ext": 1.8374440670013428,
+    "mae_hot_ext": 2.5889244079589844,
+    "mae_hot_all": 2.0121026039123535,
+    "under_rate_ext_all_outs": 0.6354166666666666
+  },
+  "elapsed_min": 84.18804248174031
+}

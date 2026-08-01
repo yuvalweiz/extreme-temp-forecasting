@@ -1,0 +1,19 @@
+{
+ "rebuilt_from_raw": {
+  "2005-07-28": {
+   "cells": 110160,
+   "ffilled": 315,
+   "train_mean_imputed": 40833,
+   "imputed_pct": 37.067
+  },
+  "2005-11-07": {
+   "cells": 110160,
+   "ffilled": 189,
+   "train_mean_imputed": 38523,
+   "imputed_pct": 34.97
+  }
+ },
+ "copied_from": "stationvec_Center",
+ "n_copied": 1194,
+ "n_rebuilt": 2
+}

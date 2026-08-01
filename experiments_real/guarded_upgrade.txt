@@ -1,0 +1,12 @@
+HOT Center     anc: incumbent opt3 HOLDS (no challenger wins both halves)
+HOT Center     soft: UPGRADE opa3_opt -> Ce_pbo | test soft-MeanMAE 1.323 -> 1.416
+HOT Negev      anc: UPGRADE ng_keda3 -> Ne_os3 | test anc-MeanMAE 1.727 -> 2.020
+HOT Negev      soft: incumbent ng3_opt HOLDS (no challenger wins both halves)
+HOT Northwest  anc: UPGRADE nw_opt -> No_pbo | test anc-MeanMAE 1.997 -> 1.791
+HOT Northwest  soft: UPGRADE nw_ked -> No_os3 | test soft-MeanMAE 1.300 -> 1.395
+COLD Center     anc: UPGRADE Ce_csp -> Ce_cked | test anc-MeanMAE 1.668 -> 1.767
+COLD Center     soft: UPGRADE Ce_csp -> Ce_cked | test soft-MeanMAE 1.183 -> 1.166
+COLD Negev      anc: incumbent Ne_csp HOLDS (no challenger wins both halves)
+COLD Negev      soft: incumbent Ne_csp HOLDS (no challenger wins both halves)
+COLD Northwest  anc: incumbent No_csp HOLDS (no challenger wins both halves)
+COLD Northwest  soft: incumbent No_csp HOLDS (no challenger wins both halves)

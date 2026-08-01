@@ -1,0 +1,13 @@
+region    model                       p1      p3      p7     p15
+Center    ConvNeXtTiny-TFT         1.294   1.205   0.952   0.872
+Center    Tab-LSTM (israel-wide)   1.741   1.163   1.052   0.940
+Center    SARIMAX                  1.767   1.244   0.931   0.763
+Center    Prophet                  1.687   1.193   0.916   0.800
+Negev     ConvNeXtTiny-TFT         1.392   1.117   1.087   1.087
+Negev     Tab-LSTM (israel-wide)   1.876   1.675   1.363   1.367
+Negev     SARIMAX                  2.123   1.558   1.119   0.807
+Negev     Prophet                  2.021   1.485   1.075   0.836
+Northwest ConvNeXtTiny-TFT         1.468   1.340   1.107   0.971
+Northwest Tab-LSTM (israel-wide)   1.757   1.471   1.181   0.952
+Northwest SARIMAX                  1.744   1.277   0.975   0.759
+Northwest Prophet                  1.690   1.233   0.949   0.777

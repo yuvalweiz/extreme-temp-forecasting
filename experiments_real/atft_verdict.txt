@@ -1,0 +1,9 @@
+== HOT: atft (region-mean tabular, TFT head, matched tuning; 3-seed topk ens) ==
+Center     n=3  anc 1.828/2.461  soft 1.299/1.693
+Negev      n=3  anc 1.940/1.649  soft 1.406/1.576
+Northwest  n=3  anc 1.814/4.054  soft 1.286/1.789
+== COLD: catft (3-seed topk ens) ==
+== COLD: catft (region-mean tabular TFT, 3-seed ens, plain preds) ==
+Center     n=3  anc 1.527/1.989  soft 0.926/1.565
+Negev      n=3  anc 1.565/2.127  soft 1.000/1.786
+Northwest  n=3  anc 1.632/2.879  soft 0.954/2.461

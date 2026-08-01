@@ -1,0 +1,11 @@
+=== SUMMER ANCHOR all-sample MAE (p1) ===
+region         NEW OLD(pub) TabLSTM SARIMAX Prophet TimesFM Moirai
+Center       2.113    2.265   2.805   4.744   4.739     -      -  
+Negev        2.007    2.135   2.823   4.805   4.832     -      -  
+Northwest    2.006    2.081   2.666   4.515   4.498     -      -  
+
+=== SUMMER SOFT all-sample MAE (mean of p3/p7/p15) ===
+region         NEW OLD(pub) TabLSTM SARIMAX Prophet
+Center       1.267    1.512   1.544   1.913   1.924
+Negev        1.537    1.557   1.817   2.315   2.342
+Northwest    1.280    1.328   1.355   1.968   1.962

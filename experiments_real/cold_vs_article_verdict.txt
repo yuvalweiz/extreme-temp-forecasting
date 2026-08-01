@@ -1,0 +1,23 @@
+=== Center COLD vs ARTICLE Tab-LSTM (thr=5.12, n=239, n_ext=23, true-align max diff 0.000) ===
+  OURS(csp 5-seed): anc_all=1.275  anc_ext=2.061  soft_all=0.986  soft_ext=1.380
+  ARTICLE tab     : anc_all=1.741  anc_ext=2.014  soft_all=1.052  soft_ext=1.738
+    anc_all: WIN (1.275 vs 1.741, d=+0.466)
+    anc_ext: LOSS (2.061 vs 2.014, d=-0.047)
+    soft_all: WIN (0.986 vs 1.052, d=+0.065)
+    soft_ext: WIN (1.380 vs 1.738, d=+0.358)
+=== Negev COLD vs ARTICLE Tab-LSTM (thr=3.27, n=239, n_ext=23, true-align max diff 0.000) ===
+  OURS(csp 5-seed): anc_all=1.331  anc_ext=2.487  soft_all=1.066  soft_ext=1.678
+  ARTICLE tab     : anc_all=1.876  anc_ext=2.024  soft_all=1.468  soft_ext=1.606
+    anc_all: WIN (1.331 vs 1.876, d=+0.545)
+    anc_ext: LOSS (2.487 vs 2.024, d=-0.463)
+    soft_all: WIN (1.066 vs 1.468, d=+0.402)
+    soft_ext: LOSS (1.678 vs 1.606, d=-0.073)
+=== Northwest COLD vs ARTICLE Tab-LSTM (thr=4.58, n=239, n_ext=17, true-align max diff 0.000) ===
+  OURS(csp 5-seed): anc_all=1.440  anc_ext=2.642  soft_all=1.006  soft_ext=1.879
+  ARTICLE tab     : anc_all=1.757  anc_ext=2.283  soft_all=1.201  soft_ext=1.887
+    anc_all: WIN (1.440 vs 1.757, d=+0.317)
+    anc_ext: LOSS (2.642 vs 2.283, d=-0.359)
+    soft_all: WIN (1.006 vs 1.201, d=+0.196)
+    soft_ext: WIN (1.879 vs 1.887, d=+0.007)
+
+TOTAL: 8/12 cells won vs ARTICLE winter tabular

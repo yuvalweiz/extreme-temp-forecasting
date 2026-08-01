@@ -1,0 +1,27 @@
+HOT Center     ANCHOR(5 runs): MAE 2.113/1.994 (Mean 2.053) | RMSE 2.713/2.461 (Mean 2.587)
+HOT Center     SOFT  (3 runs): MAE 1.267/1.379 (Mean 1.323) | RMSE 1.551/1.490 (Mean 1.521)
+HOT Center     per-rank all-case MAE (anchor model): p1=2.113 p3=1.600 p7=1.225 p15=1.042
+HOT Negev      ANCHOR(6 runs): MAE 2.007/1.447 (Mean 1.727) | RMSE 2.511/1.815 (Mean 2.163)
+HOT Negev      SOFT  (5 runs): MAE 1.537/1.165 (Mean 1.351) | RMSE 1.807/1.371 (Mean 1.589)
+HOT Negev      per-rank all-case MAE (anchor model): p1=2.007 p3=1.581 p7=1.449 p15=1.343
+HOT Northwest  ANCHOR(5 runs): MAE 2.006/1.354 (Mean 1.680) | RMSE 2.547/1.615 (Mean 2.081)
+HOT Northwest  SOFT  (5 runs): MAE 1.280/1.320 (Mean 1.300) | RMSE 1.607/1.501 (Mean 1.554)
+HOT Northwest  per-rank all-case MAE (anchor model): p1=2.006 p3=1.548 p7=1.210 p15=1.066
+HOT 3-REGION-MEAN ANC: MAE 2.042/1.598 (Mean 1.820) | RMSE 2.590/1.964 (Mean 2.277)
+HOT 3-REGION-MEAN SOFT: MAE 1.361/1.288 (Mean 1.325) | RMSE 1.655/1.454 (Mean 1.555)
+COLD Center     ANCHOR(5 runs): MAE 1.275/2.061 (Mean 1.668) | RMSE 1.645/2.351 (Mean 1.998)
+COLD Center     SOFT  (5 runs): MAE 0.986/1.380 (Mean 1.183) | RMSE 1.221/1.562 (Mean 1.392)
+COLD Center     per-rank all-case MAE (anchor model): p1=1.275 p3=1.102 p7=0.971 p15=0.886
+COLD Negev      ANCHOR(5 runs): MAE 1.331/2.487 (Mean 1.909) | RMSE 1.730/2.891 (Mean 2.310)
+COLD Negev      SOFT  (5 runs): MAE 1.066/1.678 (Mean 1.372) | RMSE 1.362/2.055 (Mean 1.708)
+COLD Negev      per-rank all-case MAE (anchor model): p1=1.331 p3=1.139 p7=1.078 p15=0.981
+COLD Northwest  ANCHOR(5 runs): MAE 1.440/2.642 (Mean 2.041) | RMSE 1.837/3.026 (Mean 2.432)
+COLD Northwest  SOFT  (5 runs): MAE 1.006/1.879 (Mean 1.443) | RMSE 1.281/2.084 (Mean 1.682)
+COLD Northwest  per-rank all-case MAE (anchor model): p1=1.440 p3=1.185 p7=0.999 p15=0.833
+COLD 3-REGION-MEAN ANC: MAE 1.349/2.396 (Mean 1.873) | RMSE 1.737/2.756 (Mean 2.247)
+COLD 3-REGION-MEAN SOFT: MAE 1.019/1.646 (Mean 1.333) | RMSE 1.288/1.900 (Mean 1.594)
+
+== pooled HOT anchor significance vs baselines (paired block bootstrap) ==
+  vs SARIMAX   all: d=-2.650 p=0.0000 | ext: d=-6.969 p=0.0000
+  vs Prophet   all: d=-2.652 p=0.0000 | ext: d=-7.024 p=0.0000
+  vs Tab-LSTM  all: d=-0.723 p=0.0000 | ext: d=-0.176 p=0.2572

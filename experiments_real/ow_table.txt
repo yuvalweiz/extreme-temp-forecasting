@@ -1,0 +1,10 @@
+== HOT anchor u-grid (per config: region-mean of seed-ens all/ext) ==
+  equal         all=2.065 ext=2.217  (runs per region: [2, 2, 2])
+  geometric     all=2.045 ext=2.302  (runs per region: [2, 2, 2])
+  steep         all=2.269 ext=1.787  (runs per region: [1, 2, 2])
+  anchor-heavy  all=2.081 ext=2.175  (runs per region: [1, 2, 2])
+== COLD anchor u-grid ==
+  equal         all=1.364 ext=2.387  (runs per region: [2, 2, 2])
+  geometric     all=1.349 ext=2.396  (runs per region: [5, 5, 5])
+  steep         all=1.404 ext=2.343  (runs per region: [2, 2, 2])
+  anchor-heavy  all=1.350 ext=2.412  (runs per region: [2, 2, 2])

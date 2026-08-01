@@ -1,0 +1,17 @@
+== PUBLISHED-PROTOCOL u-grid (3-region mean, anchor all/ext, topk 2-seed ens) ==
+  HOT equal         all=1.890 ext=2.143 (3 regions)
+  COLD equal         all=1.362 ext=2.329 (3 regions)
+  HOT geometric     all=1.908 ext=2.332 (3 regions)
+  COLD geometric     all=1.336 ext=2.573 (3 regions)
+  HOT steep         all=1.951 ext=2.644 (3 regions)
+  COLD steep         all=1.373 ext=2.413 (3 regions)
+  HOT anchor-heavy  all=1.866 ext=2.444 (3 regions)
+  COLD anchor-heavy  all=1.346 ext=2.432 (3 regions)
+== TARGET-SET ablation (Center, published protocol, anchor all/ext) ==
+  (1,2,3,4)    anchor 1.948/2.816 (2 runs)
+  (1,5,10,15)  anchor 2.002/2.422 (2 runs)
+  (1,3,7,15) baseline (Ce, published protocol): 1.966/2.392
+== SELECTION (published protocol, Center) ==
+  pselpaper : 1.997/2.384 (2s)
+  pselall   : 2.039/3.225 (2s)
+  pselext   : 2.021/2.064 (2s)

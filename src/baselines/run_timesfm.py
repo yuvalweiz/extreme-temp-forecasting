@@ -66,10 +66,13 @@ def main():
     rows = []
     for tag, fc in zip(ppoints, pf):
         p1, p3, p7, p15 = order_stats(fc, HOTTEST)
-        rows.append({"tag": tag, "pred_m1_hot": p1, "pred_m1_p3": p3, "pred_m1_p7": p7, "pred_m1_p15": p15})
+        row = {"tag": tag, "pred_m1_hot": p1, "pred_m1_p3": p3, "pred_m1_p7": p7, "pred_m1_p15": p15}
+        row.update({f"fc_d{i+1}": float(v) for i, v in enumerate(np.asarray(fc, float)[:30])})
+        rows.append(row)
     pred = pd.DataFrame(rows).merge(test, on="tag")
     os.makedirs(OUT, exist_ok=True)
-    pred.to_csv(os.path.join(OUT, f"timesfm_{REGION}.csv"), index=False)
+    suffix = "" if HOTTEST else "_min"
+    pred.to_csv(os.path.join(OUT, f"timesfm_{REGION}{suffix}.csv"), index=False)
 
     ext = pred.true_m1_hot >= thr
     def mae(col_t, col_p, mask=None):

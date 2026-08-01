@@ -167,6 +167,28 @@ class LSTMHead(nn.Module):
         return self.head(h_last)
 
 
+class VanillaTransformerHead(nn.Module):
+    """The most standard Transformer encoder head (HEAD=vanilla): linear input
+    projection -> learned positional embedding -> nn.TransformerEncoder
+    (post-norm, GELU, batch_first) -> mean pooling -> linear output. No gating,
+    no patching, no channel attention -- the textbook baseline."""
+    def __init__(self, d_in, T, d_model=256, nhead=4, layers=2, dropout=0.1, out_dim=4):
+        super().__init__()
+        self.proj = nn.Linear(d_in, d_model)
+        self.pos = nn.Parameter(torch.zeros(1, int(T), d_model))
+        enc_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead,
+                                               dim_feedforward=4 * d_model,
+                                               dropout=dropout, activation="gelu",
+                                               batch_first=True)
+        self.encoder = nn.TransformerEncoder(enc_layer, num_layers=int(layers))
+        self.out = nn.Sequential(nn.LayerNorm(d_model), nn.Linear(d_model, out_dim))
+
+    def forward(self, seq):                      # (B, T, F)
+        x = self.proj(seq) + self.pos[:, :seq.shape[1]]
+        x = self.encoder(x)
+        return self.out(x.mean(dim=1))
+
+
 class OutputAffine(nn.Module):
     def __init__(self, out_dim=4):
         super().__init__()
@@ -190,11 +212,27 @@ class HeadOnlyModel(nn.Module):
         elif ht == "lstm":          self.head = LSTMHead(F, d_model, max(1, hl), dropout, out_dim)
         elif ht == "patchtst":      self.head = PatchTSTHead(F, d_model, nhead, hl, 30, 30, dropout, out_dim)
         elif ht == "itransformer":  self.head = iTransformerHead(F, T, d_model, nhead, hl, dropout, out_dim)
+        elif ht == "vanilla":       self.head = VanillaTransformerHead(F, T, d_model, nhead, hl, dropout, out_dim)
         else: raise ValueError(head_type)
         self.out_affine = OutputAffine(out_dim)
 
     def forward(self, x):           # x: (B,T,F)
         return self.out_affine(self.head(x))
+
+
+class FlatFrameEncoder(nn.Module):
+    """No-CNN ablation control (BACKBONE=flat): flattens each daily frame and applies a
+    single linear projection to the same 768-d embedding dimension ConvNeXt-Tiny
+    produces. Identical input frames and temporal heads; only the spatial inductive
+    bias (convolutional weight sharing / locality) is removed. Uses LazyLinear so the
+    flattened dimension (C*H*W) is bound on first forward."""
+    def __init__(self, out_dim: int = 768):
+        super().__init__()
+        self.out_dim = out_dim
+        self.proj = nn.LazyLinear(out_dim)
+
+    def forward(self, x):            # x: (N, C, H, W)
+        return self.proj(x.flatten(1))
 
 
 class ConvNeXtTiny_WithHead(nn.Module):
@@ -203,9 +241,12 @@ class ConvNeXtTiny_WithHead(nn.Module):
                  out_dim=4, lstm_bidirectional=False, backbone_pool="avg",
                  backbone_name="convnext_tiny", head_layers=None, spatial_stage=None):
         super().__init__()
-        self.backbone = ConvNeXtTinyBackbone(in_chans=in_chans, pretrained=pretrained,
-                                             pool=backbone_pool, model_name=backbone_name,
-                                             spatial_stage=spatial_stage)
+        if str(backbone_name).lower() == "flat":   # no-CNN linear-projection control
+            self.backbone = FlatFrameEncoder(out_dim=768)
+        else:
+            self.backbone = ConvNeXtTinyBackbone(in_chans=in_chans, pretrained=pretrained,
+                                                 pool=backbone_pool, model_name=backbone_name,
+                                                 spatial_stage=spatial_stage)
         self.backbone_chunk = int(backbone_chunk)
         F = self.backbone.out_dim
         ht = str(head_type).lower()
@@ -220,8 +261,10 @@ class ConvNeXtTiny_WithHead(nn.Module):
             self.head = TemporalFusionLiteHead(F, d_model, nhead, tf_l, dropout, out_dim)
         elif ht == "lstm":
             self.head = LSTMHead(F, d_model, ls_l, dropout, out_dim, lstm_bidirectional)
+        elif ht == "vanilla":
+            self.head = VanillaTransformerHead(F, T, d_model, nhead, tf_l, dropout, out_dim)
         else:
-            raise ValueError("head_type must be one of: patchtst / itransformer / temporalfusion / lstm")
+            raise ValueError("head_type must be one of: patchtst / itransformer / temporalfusion / lstm / vanilla")
         self.out_affine = OutputAffine(out_dim=out_dim) if use_out_affine else nn.Identity()
 
     def forward(self, X):

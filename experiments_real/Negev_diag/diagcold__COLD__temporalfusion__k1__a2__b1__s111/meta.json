@@ -1,0 +1,54 @@
+{
+  "run_id": "diagcold__COLD__temporalfusion__k1__a2__b1__s111",
+  "region_dir": "/home/weizyuv/stationvec_MIN_Negev",
+  "mode": "COLD",
+  "head_type": "temporalfusion",
+  "k": 1.0,
+  "under_alpha_ext": 2.0,
+  "beta_hot": 1.0,
+  "dropout": 0.1,
+  "extreme_q": 0.1,
+  "cold_thr": 3.2699999809265146,
+  "out_weights": [
+    1.0,
+    0.5,
+    0.25,
+    0.125
+  ],
+  "seed": 111,
+  "best_ep": 81,
+  "scheduler": "cosine",
+  "ema_score_alpha": 0.35,
+  "selection": "avg(val_mae_cold_all, val_mae_cold_ext) output 0 (EMA-smoothed)",
+  "val": {
+    "n": 143,
+    "n_ext": 8,
+    "mae_cold_all": 1.1450021266937256,
+    "mae_cold_ext": 0.493678480386734,
+    "too_warm_mae_ext": 0.43519002199172974,
+    "too_warm_rate_ext": 0.75,
+    "mae_out_all": [
+      1.1450021266937256,
+      1.052272915840149,
+      0.998275876045227,
+      1.0520082712173462
+    ],
+    "mae_mean_all": 1.0618897676467896
+  },
+  "test": {
+    "n": 239,
+    "n_ext": 23,
+    "mae_cold_all": 1.3069782257080078,
+    "mae_cold_ext": 2.6366188526153564,
+    "too_warm_mae_ext": 2.4720640182495117,
+    "too_warm_rate_ext": 0.782608695652174,
+    "mae_out_all": [
+      1.3069782257080078,
+      1.138344168663025,
+      1.0785911083221436,
+      1.047685980796814
+    ],
+    "mae_mean_all": 1.1428998708724976
+  },
+  "elapsed_min": 318.947353319327
+}

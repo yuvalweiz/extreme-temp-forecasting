@@ -1,0 +1,54 @@
+{
+  "run_id": "diagcold__COLD__temporalfusion__k1__a2__b1__s111",
+  "region_dir": "/home/weizyuv/stationvec_MIN_Center",
+  "mode": "COLD",
+  "head_type": "temporalfusion",
+  "k": 1.0,
+  "under_alpha_ext": 2.0,
+  "beta_hot": 1.0,
+  "dropout": 0.1,
+  "extreme_q": 0.1,
+  "cold_thr": 5.116666793823242,
+  "out_weights": [
+    1.0,
+    0.5,
+    0.25,
+    0.125
+  ],
+  "seed": 111,
+  "best_ep": 47,
+  "scheduler": "cosine",
+  "ema_score_alpha": 0.35,
+  "selection": "avg(val_mae_cold_all, val_mae_cold_ext) output 0 (EMA-smoothed)",
+  "val": {
+    "n": 143,
+    "n_ext": 10,
+    "mae_cold_all": 1.1762819290161133,
+    "mae_cold_ext": 0.5024121999740601,
+    "too_warm_mae_ext": 0.14258833229541779,
+    "too_warm_rate_ext": 0.5,
+    "mae_out_all": [
+      1.1762819290161133,
+      1.07310950756073,
+      1.0535527467727661,
+      0.9917325377464294
+    ],
+    "mae_mean_all": 1.073669195175171
+  },
+  "test": {
+    "n": 239,
+    "n_ext": 23,
+    "mae_cold_all": 1.435006022453308,
+    "mae_cold_ext": 2.20263671875,
+    "too_warm_mae_ext": 2.1648900508880615,
+    "too_warm_rate_ext": 0.9565217391304348,
+    "mae_out_all": [
+      1.435006022453308,
+      1.2535364627838135,
+      1.0812221765518188,
+      1.0281189680099487
+    ],
+    "mae_mean_all": 1.1994708776474
+  },
+  "elapsed_min": 204.30897217988968
+}
