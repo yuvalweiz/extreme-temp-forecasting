@@ -13,6 +13,10 @@ matplotlib==3.10.8
 # Frame generation only (SRTM DEM elevation sampling in src/data/rebuild_frames.py)
 rasterio==1.4.4
 
+# Optional — classical trajectory baselines (bundled outputs in results/; needed only to re-run them)
+# statsmodels==0.14.1   # src/baselines/run_sarimax_traj.py
+# prophet==1.1.5        # src/baselines/run_prophet_traj.py
+
 # Optional — zero-shot foundation-model baselines only
 # (large downloads; the paper's baseline outputs are already bundled in results/)
 # timesfm @ git+https://github.com/google-research/timesfm.git@6bd8044275f8b76cdc9554f2fecccac5f31a156c  # TimesFM 2.5 (src/baselines/run_timesfm.py)

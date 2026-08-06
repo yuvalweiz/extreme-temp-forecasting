@@ -70,8 +70,7 @@ verify the code paths:
 
 The **station-vector datasets** (`data/stationvec_<Region>/`,
 `data/stationvec_MIN_<Region>/`; ~400 MB each) and the **interpolation weight
-matrices** (`data/interp_weights/`; ~260 MB) are distributed as a data release
-(too big for git). Unpack them into `<repo>/data/` (or point `REPO_DATA` at them).
+matrices** (`data/interp_weights/`; ~260 MB) are bundled in this repository under `data/` (no separate download needed).
 They are enough to **train the full spatial model** (frames are synthesized on the
 fly as `weights x station-vector`, the validated equivalent of the frame bank) and
 to run the fair-tabular ablation. Both are also **fully regenerable** from the raw
