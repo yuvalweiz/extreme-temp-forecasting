@@ -52,6 +52,8 @@ MODELS = {
     "SARIMAX": lambda s, r: deep(AO, s, r, "SARIMAX"),
     "TimesFM-2.5": lambda s, r: foundation("timesfm", s, r),
     "Moirai-1.1": lambda s, r: foundation("moirai", s, r),
+    "Climatology": lambda s, r: deep(AC, s, r, "Climatology"),
+    "SeasonalNaive": lambda s, r: deep(AC, s, r, "SeasonalNaive"),
 }
 
 # Printed manuscript cells: (season, model) -> per-region [anchor MAE, RMSE, UPE, soft MAE3, RMSE3]
@@ -74,6 +76,10 @@ PRINTED = {
 ("winter","SARIMAX"):             {"Center":[1.767,2.333,None,0.979,1.359],"Northwest":[1.744,2.374,None,1.004,1.420],"Negev":[2.123,2.708,None,1.161,1.608]},
 ("winter","TimesFM-2.5"):         {"Center":[2.067,2.570,None,1.037,1.403],"Northwest":[2.073,2.658,None,1.057,1.466],"Negev":[2.298,2.814,None,1.196,1.571]},
 ("winter","Moirai-1.1"):          {"Center":[2.535,3.042,None,1.518,2.002],"Northwest":[2.458,3.034,None,1.448,1.942],"Negev":[2.682,3.207,None,1.657,2.130]},
+("summer","Climatology"):        {"Center":[4.716,5.591,None,1.955,2.623],"Northwest":[4.483,5.412,None,1.985,2.783],"Negev":[4.760,5.344,None,2.311,2.925]},
+("summer","SeasonalNaive"):      {"Center":[2.746,3.404,None,1.581,2.041],"Northwest":[2.536,3.194,None,1.631,2.133],"Negev":[2.632,3.197,None,1.834,2.305]},
+("winter","Climatology"):        {"Center":[1.739,2.305,None,0.983,1.362],"Northwest":[1.728,2.350,None,1.001,1.418],"Negev":[2.122,2.710,None,1.165,1.619]},
+("winter","SeasonalNaive"):      {"Center":[1.510,2.041,None,1.177,1.525],"Northwest":[1.657,2.231,None,1.286,1.683],"Negev":[1.682,2.238,None,1.331,1.712]},
 }
 
 rows, fails = [], []
