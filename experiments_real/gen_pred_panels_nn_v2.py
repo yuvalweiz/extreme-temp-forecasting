@@ -47,7 +47,7 @@ for season, reg, stem, title in SPECS:
     g = merged.groupby("month").mean(numeric_only=True).reset_index()
     x = g["month"].dt.to_timestamp()
 
-    fig, ax = plt.subplots(figsize=(11.5, 4.3))
+    fig, ax = plt.subplots(figsize=(10.5, 4.1))
     ax.plot(x, g["actual"], color="black", lw=2.6, marker="s", ms=7, label="Observed", zorder=10)
     for label, src, fs, color, marker, ls in MODELS:
         ax.plot(x, g[label], color=color, lw=1.8, ls=ls, marker=marker, ms=6,
@@ -56,8 +56,10 @@ for season, reg, stem, title in SPECS:
     ax.set_title(title)
     ax.grid(alpha=0.25)
     ax.margins(x=0.01)
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.13), ncol=4,
-              frameon=False, fontsize=13.5, handlelength=2.0, columnspacing=1.0)
+    for tl in ax.get_xticklabels():
+        tl.set_rotation(30); tl.set_ha("right")
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.24), ncol=4,
+              frameon=False, fontsize=15, handlelength=1.8, columnspacing=0.9)
     fig.savefig(os.path.join(OUT, stem + ".pdf"), bbox_inches="tight")
     plt.close(fig)
     print(f"{season} {reg:10s} -> {stem}  (months={len(g)}, samples={len(merged)})")
