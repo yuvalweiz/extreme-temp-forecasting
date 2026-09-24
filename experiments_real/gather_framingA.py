@@ -1,4 +1,9 @@
-"""FRAMING A numbers pack + AVP export for the NN-interpolation featured pipeline.
+"""NOTE (2026-09-24): SOURCES below are the pre-guarded candidate rows used for the numbers pack.
+The DEPLOYED featured summer ensembles are the guarded picks printed by guarded_nn_featured.py
+(Center anchor = nnfs2std_a1b0 + nnfb blend, Negev anchor = nnfP2FIN, NW anchor = nnfFIN_std;
+soft cells = two-member (1,0) blends); seed_variance_all.py reproduces every released cell.
+
+FRAMING A numbers pack + AVP export for the NN-interpolation featured pipeline.
 1. Exports 5-seed-ensemble AVP csvs for the NN variant (and the per-station Tab-TFT
    ablation) in the exact deliverable schema, into
    results/actual_vs_predicted_corrected/{season}/{region}/ as
