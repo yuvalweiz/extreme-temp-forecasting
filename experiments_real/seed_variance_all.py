@@ -16,10 +16,10 @@ S = {"Center": "Ce", "Negev": "Ne", "Northwest": "No"}
 def pats(model, season, reg):
     s = S[reg]
     if model == "ConvNeXtTiny-TFT-NN":
-        # anchor-target deployments per guarded_nn_featured.py (summer) / single nnfwin (winter)
+        # deployed run sets: single (1,0) set per region (deploy_single_nn_summer.py) / single nnfwin (winter)
         if season == "winter":
             return [f"{E}/{reg}_cold/nnfwin__*"]
-        return {"Center": [f"{E}/Center_tune/nnfs2std_a1b0__*", f"{E}/Center_stable/nnfb__*"],
+        return {"Center": [f"{E}/Center_tune/nnfs2std_a1b0__*"],
                 "Northwest": [f"{E}/Northwest_stable/nnfFIN_std__*"],
                 "Negev": [f"{E}/Negev_stable/nnfP2FIN__*"]}[reg]
     if model == "ConvNeXtTiny-TFT":
@@ -40,6 +40,12 @@ def pats(model, season, reg):
         return [f"{E}/{reg}_cold/stfwin__*"]
     raise ValueError(model)
 
+def deployed_files(model, season):
+    """Which per-run prediction file the released ensemble was built from."""
+    if season == "winter" and model in ("ConvNeXtTiny-TFT", "ConvNeXtTiny-LSTM", "Tab-LSTM"):
+        return ["preds_test.csv"]
+    return ["preds_test_topk.csv", "preds_test.csv"]
+
 rows = []
 for model in ["ConvNeXtTiny-TFT-NN", "ConvNeXtTiny-TFT", "ConvNeXtTiny-LSTM", "Tab-TFT", "Tab-LSTM"]:
     for season in ["summer", "winter"]:
@@ -50,10 +56,8 @@ for model in ["ConvNeXtTiny-TFT-NN", "ConvNeXtTiny-TFT", "ConvNeXtTiny-LSTM", "T
             maes = []
             for g in pats(model, season, reg):
                 for d in sorted(glob.glob(g)):
-                    f = os.path.join(d, "preds_test_topk.csv")
-                    if not os.path.exists(f):
-                        f = os.path.join(d, "preds_test.csv")
-                    if not os.path.exists(f):
+                    f = next((os.path.join(d, n) for n in deployed_files(model, season) if os.path.exists(os.path.join(d, n))), None)
+                    if f is None:
                         continue
                     p = pd.read_csv(f)
                     p["tag"] = p["tag"].astype(str).str[:10]
@@ -69,10 +73,8 @@ for model in ["ConvNeXtTiny-TFT-NN", "ConvNeXtTiny-TFT", "ConvNeXtTiny-LSTM", "T
             for g in pats(model, season, reg):
                 fs = []
                 for d in sorted(glob.glob(g)):
-                    f = os.path.join(d, "preds_test_topk.csv")
-                    if not os.path.exists(f):
-                        f = os.path.join(d, "preds_test.csv")
-                    if os.path.exists(f):
+                    f = next((os.path.join(d, n) for n in deployed_files(model, season) if os.path.exists(os.path.join(d, n))), None)
+                    if f is not None:
                         p = pd.read_csv(f); p["tag"] = p["tag"].astype(str).str[:10]
                         fs.append(p.set_index("tag")["pred_m1_hot"])
                 if fs:

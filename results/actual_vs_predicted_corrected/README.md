@@ -10,8 +10,11 @@ Layout and column dictionary are identical to `../..` conventions:
 `sample_id, date, region, season, target, model, split, actual, predicted, residual,
 abs_error, sq_error` (+ per-rank `actual_p*`/`predicted_p*` in soft files).
 
-Models: `ConvNeXtTiny-TFT-NN` (the paper's featured model: learned NN interpolation,
-per-region/target validation-selected, seed-ensembled), `ConvNeXtTiny-TFT` (kernel-frame
+Models: `ConvNeXtTiny-TFT-NN` (the paper's featured model: learned NN interpolation, one
+training recipe per task, five seeds averaged; summer = one (1,0) run set per region
+chosen by validation anchor MAE, winter = one (2,1) run set; produced by
+`experiments_real/deploy_single_nn_summer.py`; the superseded two-member summer averages are
+kept as `*.superseded_blend.csv`), `ConvNeXtTiny-TFT` (kernel-frame
 variant), `ConvNeXtTiny-LSTM` (LSTM-head variant), `Tab-TFT` and `Tab-LSTM` (the
 information-matched spatial-structure ablations: per-station 612-dim input, own
 validation-selected configurations, 5 seeds each). Classical (SARIMAX, Prophet) rows
@@ -25,8 +28,8 @@ To rebuild and verify EVERY cell of the manuscript's two result tables from thes
 
 (exits non-zero on any mismatch; writes `manuscript_tables.csv` and regenerates
 `metrics_summary_corrected.csv`). Significance: `experiments_real/final_tables/
-significance_featured_v2.csv` (featured vs the four baselines, per-region + pooled,
-Holm) and `significance_spatial_vs_tabs_v2.csv` (all three spatial variants vs both
+significance_featured_v3.csv` (featured vs the four baselines, per-region + pooled,
+Holm) and `significance_spatial_vs_tabs_v3.csv` (all three spatial variants vs both
 tabular ablations).
 
 Metric definitions (per the manuscript's Evaluation Metrics section):

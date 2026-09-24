@@ -58,7 +58,7 @@ MODELS = {
 
 # Printed manuscript cells: (season, model) -> per-region [anchor MAE, RMSE, UPE, soft MAE3, RMSE3]
 PRINTED = {
-("summer","ConvNeXtTiny-TFT-NN"): {"Center":[1.852,2.405,None,1.276,1.669],"Northwest":[1.859,2.392,None,1.293,1.747],"Negev":[1.766,2.299,None,1.407,1.823]},
+("summer","ConvNeXtTiny-TFT-NN"):    {"Center":[1.843,2.416,1.100,1.265,1.653],"Northwest":[1.859,2.392,1.108,1.308,1.750],"Negev":[1.766,2.299,1.124,1.442,1.865]},
 ("summer","ConvNeXtTiny-TFT"):    {"Center":[2.113,2.713,None,1.267,1.683],"Northwest":[1.809,2.284,None,1.279,1.759],"Negev":[2.007,2.511,None,1.393,1.792]},
 ("summer","ConvNeXtTiny-LSTM"):   {"Center":[2.315,2.917,None,1.277,1.698],"Northwest":[1.985,2.513,None,1.250,1.748],"Negev":[2.535,3.038,None,1.531,2.041]},
 ("summer","Tab-TFT"):             {"Center":[1.914,2.488,None,1.304,1.670],"Northwest":[1.894,2.401,None,1.290,1.676],"Negev":[1.896,2.422,None,1.567,1.999]},
